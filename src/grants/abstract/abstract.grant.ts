@@ -1,3 +1,4 @@
+import { AuthorizationServerOptions } from "../../authorization_server";
 import { isClientConfidential, OAuthClient } from "../../entities/client.entity";
 import { OAuthScope } from "../../entities/scope.entity";
 import { OAuthToken } from "../../entities/token.entity";
@@ -32,7 +33,10 @@ export interface ITokenData {
 }
 
 export abstract class AbstractGrant implements GrantInterface {
-  public requiresPKCE = true;
+  public readonly options: AuthorizationServerOptions = {
+    requiresPKCE: true,
+    useUrlEncode: true,
+  };
 
   protected readonly scopeDelimiterString = " ";
 
@@ -55,7 +59,12 @@ export abstract class AbstractGrant implements GrantInterface {
     protected readonly jwt: JwtInterface,
   ) {}
 
-  async makeBearerTokenResponse(client: OAuthClient, accessToken: OAuthToken, scopes: OAuthScope[] = [], extraJwtFields: ExtraAccessTokenFields = {}) {
+  async makeBearerTokenResponse(
+    client: OAuthClient,
+    accessToken: OAuthToken,
+    scopes: OAuthScope[] = [],
+    extraJwtFields: ExtraAccessTokenFields = {},
+  ) {
     const scope = scopes.map(scope => scope.name).join(this.scopeDelimiterString);
 
     const encryptedAccessToken = await this.encryptAccessToken(client, accessToken, scopes, extraJwtFields);
@@ -92,7 +101,12 @@ export abstract class AbstractGrant implements GrantInterface {
     });
   }
 
-  protected encryptAccessToken(client: OAuthClient, accessToken: OAuthToken, scopes: OAuthScope[], extraJwtFields: ExtraAccessTokenFields) {
+  protected encryptAccessToken(
+    client: OAuthClient,
+    accessToken: OAuthToken,
+    scopes: OAuthScope[],
+    extraJwtFields: ExtraAccessTokenFields,
+  ) {
     return this.encrypt(<ITokenData | any>{
       // non standard claims
       ...extraJwtFields,
