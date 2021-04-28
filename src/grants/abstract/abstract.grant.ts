@@ -1,3 +1,4 @@
+import { throws } from "node:assert";
 import { AuthorizationServerOptions } from "../../authorization_server";
 import { isClientConfidential, OAuthClient } from "../../entities/client.entity";
 import { OAuthScope } from "../../entities/scope.entity";
@@ -101,13 +102,18 @@ export abstract class AbstractGrant implements GrantInterface {
     });
   }
 
-  protected encryptAccessToken(
+  protected async encryptAccessToken(
     client: OAuthClient,
     accessToken: OAuthToken,
     scopes: OAuthScope[],
     extraJwtFields: ExtraAccessTokenFields,
   ) {
-    return this.encrypt(<ITokenData | any>{
+    const accessTokenPayload = (await this.tokenRepository.getAccessTokenPayload(
+      client,
+      accessToken,
+      scopes,
+      extraJwtFields,
+    )) || {
       // non standard claims
       ...extraJwtFields,
       cid: client.name,
@@ -121,7 +127,8 @@ export abstract class AbstractGrant implements GrantInterface {
       nbf: roundToSeconds(Date.now()), // @see https://tools.ietf.org/html/rfc7519#section-4.1.5
       iat: roundToSeconds(Date.now()), // @see https://tools.ietf.org/html/rfc7519#section-4.1.6
       jti: accessToken.accessToken, // @see https://tools.ietf.org/html/rfc7519#section-4.1.7
-    });
+    };
+    return this.encrypt(accessTokenPayload);
   }
 
   protected async validateClient(request: RequestInterface): Promise<OAuthClient> {

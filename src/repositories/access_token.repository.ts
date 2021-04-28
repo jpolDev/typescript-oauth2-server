@@ -15,4 +15,11 @@ export interface OAuthTokenRepository {
   isRefreshTokenRevoked(refreshToken: OAuthToken): Promise<boolean>;
 
   getByRefreshToken(refreshTokenToken: string): Promise<OAuthToken>;
+
+  getAccessTokenPayload(
+    client: OAuthClient,
+    accessToken: OAuthToken,
+    scopes: OAuthScope[],
+    extraJwtFields: Record<string, string | number | boolean>,
+  ): Promise<any> | undefined;
 }

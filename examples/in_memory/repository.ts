@@ -80,6 +80,14 @@ export const inMemoryAccessTokenRepository: OAuthTokenRepository = {
     inMemoryDatabase.tokens[token.accessToken] = token;
     return token;
   },
+  async getAccessTokenPayload(
+    client: OAuthClient,
+    accessToken: OAuthToken,
+    scopes: OAuthScope[],
+    extraJwtFields: Record<string, string | number | boolean>,
+  ): Promise<any> {
+    return undefined;
+  },
 };
 
 export const inMemoryAuthCodeRepository: OAuthAuthCodeRepository = {
