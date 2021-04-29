@@ -1,6 +1,6 @@
 {
-  "version": "1.0.4",
-  "name": "@jmondi/oauth2-server",
+  "version": "1.0.5",
+  "name": "jpoldev-oauth2-server",
   "author": "Jason Raimondi <jason@raimondi.us>",
   "module": "dist/oauth2-server.esm.js",
   "license": "MIT",
