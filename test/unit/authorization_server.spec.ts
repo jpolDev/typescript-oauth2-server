@@ -20,7 +20,7 @@ import { RefreshTokenGrant } from "../../src/grants/refresh_token.grant";
 import { AuthorizationRequest } from "../../src/requests/authorization.request";
 import { OAuthRequest } from "../../src/requests/request";
 import { OAuthResponse } from "../../src/responses/response";
-import { base64encode } from "../../src/utils/base64";
+import { base64encode, base64urlencode } from "../../src/utils/base64";
 import { DateInterval } from "../../src/utils/date_interval";
 import { JwtService } from "../../src/utils/jwt";
 import { expectTokenResponse } from "./grants/client_credentials.grant.spec";
@@ -180,12 +180,15 @@ describe("authorization_server", () => {
       );
 
       authorizationServer.enableGrantType("authorization_code");
-      const code_verifier = crypto.randomBytes(43).toString("hex");
+      const code_verifier = base64urlencode(crypto.randomBytes(32));
 
-      const code_verifier_hash = crypto
-        .createHash("sha256")
-        .update(code_verifier)
-        .digest("hex");
+      const code_verifier_hash = base64urlencode(
+        crypto
+          .createHash("sha256")
+          .update(code_verifier)
+          .digest(),
+      );
+      console.log(code_verifier, "-", code_verifier_hash);
 
       const request = new OAuthRequest({
         query: {

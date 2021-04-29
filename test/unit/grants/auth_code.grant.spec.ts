@@ -35,8 +35,8 @@ describe("authorization_code grant", () => {
   let request: OAuthRequest;
   let response: OAuthResponse;
 
-  const codeVerifier = "qqVDyvlSezXc64NY5Rx3BbL_aT7c2xEBgoJP9domepFZLEjo9ln8EA"; // base64urlencode(crypto.randomBytes(40));
-  const codeChallenge = "ODQwZGM4YzZlNzMyMjQyZDAxYjE5MWZkY2RkNjJmMTllMmI0NzI0ZDlkMGJlYjFlMmMxOWY2ZDI1ZDdjMjMwYg"; // base64urlencode(crypto.createHash("sha256").update(codeVerifier).digest("hex"));
+  const codeVerifier = "znzZ3g8iLqJRNxfze03lVEFNVx7ko7HDdYVH9xUs75k"; // base64urlencode(crypto.randomBytes(40));
+  const codeChallenge = "DB7bBhT3_VGi5xI2HMzwK-xAUSQ10dW1ozXRP7-m04A"; // base64urlencode(crypto.createHash("sha256").update(codeVerifier).digest("hex"));
 
   beforeEach(() => {
     request = new OAuthRequest();
@@ -62,6 +62,8 @@ describe("authorization_code grant", () => {
       inMemoryUserRepository,
       new JwtService("secret-key"),
     );
+
+    grant.options.useUrlEncode = false;
 
     inMemoryDatabase.clients[client.id] = client;
     inMemoryDatabase.users[user.id] = user;
