@@ -1,4 +1,3 @@
-import { throws } from "node:assert";
 import { AuthorizationServerOptions } from "../../authorization_server";
 import { isClientConfidential, OAuthClient } from "../../entities/client.entity";
 import { OAuthScope } from "../../entities/scope.entity";
